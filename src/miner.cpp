@@ -334,7 +334,8 @@ bool static ScanHash(const CBlockHeader *pblock, uint32_t& nNonce, uint256 *phas
     CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
     ss << *pblock;
     assert(ss.size() == 80);
-    hasher.Write((unsigned char*)&ss[0], 76);
+    uint256 prevHash = pblock->hashPrevBlock;
+    hasher.Write((unsigned char*)&ss[0], 76, prevHash);
 
     while (true) {
         nNonce++;
@@ -342,6 +343,7 @@ bool static ScanHash(const CBlockHeader *pblock, uint32_t& nNonce, uint256 *phas
         // Write the last 4 bytes of the block header (the nonce) to a copy of
         // the double-SHA256 state, and compute the result.
         CHash256(hasher).Write((unsigned char*)&nNonce, 4).Finalize((unsigned char*)phash);
+
 
         // Return the nonce if the hash has at least some zero bits,
         // caller will check if it has enough to reach the target

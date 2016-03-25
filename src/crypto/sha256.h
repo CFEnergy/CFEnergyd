@@ -5,6 +5,8 @@
 #ifndef BITCOIN_CRYPTO_SHA256_H
 #define BITCOIN_CRYPTO_SHA256_H
 
+#include "uint256.h"
+
 #include <stdint.h>
 #include <stdlib.h>
 
@@ -20,7 +22,9 @@ public:
     static const size_t OUTPUT_SIZE = 32;
 
     CSHA256();
-    CSHA256& Write(const unsigned char* data, size_t len);
+    //CSHA256& Write(const unsigned char* data, size_t len);
+    CSHA256& Write(const unsigned char* data, size_t len, uint256 prevHash=uint256());
+    //void Finalize(unsigned char hash[OUTPUT_SIZE]);
     void Finalize(unsigned char hash[OUTPUT_SIZE]);
     CSHA256& Reset();
 };

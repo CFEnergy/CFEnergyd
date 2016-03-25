@@ -12,7 +12,13 @@
 
 uint256 CBlockHeader::GetHash() const
 {
-    return SerializeHash(*this);
+    //return SerializeHash(*this);
+    return GetCfHash ();
+}
+
+uint256 CBlockHeader::GetCfHash() const
+{
+    return SerializeHash(*this, SER_GETHASH, PROTOCOL_VERSION, this->hashPrevBlock);
 }
 
 std::string CBlock::ToString() const

@@ -30,8 +30,8 @@ public:
         sha.Reset().Write(buf, sha.OUTPUT_SIZE).Finalize(hash);
     }
 
-    CHash256& Write(const unsigned char *data, size_t len) {
-        sha.Write(data, len);
+    CHash256& Write(const unsigned char *data, size_t len, uint256 prevHash=uint256()) {
+        sha.Write(data, len, prevHash);
         return *this;
     }
 
@@ -135,11 +135,12 @@ private:
 public:
     int nType;
     int nVersion;
+    uint256 prevHash;
 
-    CHashWriter(int nTypeIn, int nVersionIn) : nType(nTypeIn), nVersion(nVersionIn) {}
+    CHashWriter(int nTypeIn, int nVersionIn, uint256 prevHashIn=uint256()) : nType(nTypeIn), nVersion(nVersionIn) , prevHash(prevHashIn){}
 
     CHashWriter& write(const char *pch, size_t size) {
-        ctx.Write((const unsigned char*)pch, size);
+        ctx.Write((const unsigned char*)pch, size, prevHash);
         return (*this);
     }
 
@@ -160,9 +161,9 @@ public:
 
 /** Compute the 256-bit hash of an object's serialization. */
 template<typename T>
-uint256 SerializeHash(const T& obj, int nType=SER_GETHASH, int nVersion=PROTOCOL_VERSION)
+uint256 SerializeHash(const T& obj, int nType=SER_GETHASH, int nVersion=PROTOCOL_VERSION, uint256 prevHash=uint256())
 {
-    CHashWriter ss(nType, nVersion);
+    CHashWriter ss(nType, nVersion, prevHash);
     ss << obj;
     return ss.GetHash();
 }

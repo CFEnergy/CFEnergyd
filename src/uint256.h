@@ -125,6 +125,11 @@ public:
     {
         return ReadLE64(data);
     }
+    
+    uint32_t GetCheap32Hash() const
+    {
+        return ReadLE32(data);
+    }
 
     /** A more secure, salted hash function.
      * @note This hash is not stable between little and big endian.
